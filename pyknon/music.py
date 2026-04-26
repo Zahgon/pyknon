@@ -19,15 +19,15 @@ class Rest:
 
     @property
     def verbose(self):
-        return "<Rest: {0}>".format(self.dur)
+        pass
 
     @property
     def midi_dur(self):
         # The MIDI library uses 1 for quarter note but we use 0.25
-        return self.dur * 4
+        pass
 
     def stretch_dur(self, factor):
-        return Rest(self.dur * factor)
+        pass
 
 
 class Note:
@@ -52,21 +52,20 @@ class Note:
 
     @property
     def verbose(self):
-        return "<Note: {0}, {1}, {2}>".format(self.value, self.octave, self.dur)
+        pass
 
     @property
     def name(self):
-        note_names = "C C# D D# E F F# G G# A A# B".split()
-        return note_names[self.value % 12]
+        pass
 
     @property
     def midi_number(self):
-        return self.value + (self.octave * 12)
+        pass
 
     @property
     def midi_dur(self):
         # The MIDI library uses 1 for quarter note but we use 0.25
-        return self.dur * 4
+        pass
 
     def __note_octave(self, octave):
         """Return a note value in terms of a given octave octave
@@ -74,51 +73,37 @@ class Note:
            n = Note(11, 4)
            __note_octave(n, 5) = -1
         """
-
-        return self.value + ((self.octave - octave) * 12)
+        pass
 
     def transposition(self, index):
-        return Note(self.value + index, self.octave, self.dur, self.volume)
+        pass
 
     ## FIXME: transpose down
     def tonal_transposition(self, index, scale):
-        pos = index + scale.index(self) - 1
-        octave, rest = divmod(pos, 7)
-        note = copy.copy(scale[pos % len(scale)])
-        note.octave += octave
-        return note
+        pass
 
     def harmonize(self, scale, interval=3, size=3):
-        i = (interval - 1)
-        indices = range(1, size*i, i)
-        return [self.tonal_transposition(x, scale) for x in indices]
+        pass
 
     def inversion(self, index=0, initial_octave=None):
-        value = self.__note_octave(initial_octave) if initial_octave else self.value
-        octv = initial_octave if initial_octave else self.octave
-        note_value = (2 * index) - value
-        return Note(note_value, octv, self.dur, self.volume)
+        pass
 
     def stretch_dur(self, factor):
-        return Note(self.value, self.octave, self.dur * factor, self.volume)
+        pass
 
 
 class NoteSeq(MutableSequence):  # pylint: disable=too-many-ancestors
     @staticmethod
     def _is_note_or_rest(args):
-        return all(isinstance(x, (Note, Rest)) for x in args)
+        pass
 
     @staticmethod
     def _make_note_or_rest(note_list):
-        if note_list[0] is not None:
-            return Note(*note_list)
-        else:
-            return Rest(note_list[2])
+        pass
 
     @staticmethod
     def _parse_score(filename):
-        with open(filename) as score:
-            return [note for line in score for note in line.split()]
+        pass
 
     def __init__(self, args=None):
         if isinstance(args, str):
@@ -183,63 +168,45 @@ class NoteSeq(MutableSequence):  # pylint: disable=too-many-ancestors
 
     @property
     def verbose(self):
-        string = ", ".join([note.verbose for note in self.items])
-        return "<NoteSeq: [{0}]>".format(string)
+        pass
 
     def retrograde(self):
-        return NoteSeq(list(reversed(self.items)))
+        pass
 
     def insert(self, key, value):
-        self.items.insert(key, value)
+        pass
 
     def transposition(self, index):
-        return NoteSeq([x.transposition(index) if isinstance(x, Note) else x
-                        for x in self.items])
+        pass
 
     @staticmethod
     def _make_note(item):
-        return Note(item) if isinstance(item, (int, str)) else item
+        pass
 
     def transposition_startswith(self, note_start):
-        note = self._make_note(note_start)
-        return self.transposition(note - self.items[0])
+        pass
 
     def inversion(self, index=0):
-        initial_octave = self.items[0].octave
-        return NoteSeq([x.inversion(index, initial_octave) if isinstance(x, Note)
-                        else x for x in self.items])
+        pass
 
     def inversion_startswith(self, note_start):
-        note = self._make_note(note_start)
-        inv = self.transposition_startswith(Note(0, note.octave)).inversion()
-        return inv.transposition_startswith(note)
+        pass
 
     def harmonize(self, interval=3, size=3):
-        return [NoteSeq(note.harmonize(self, interval, size)) for note in self]
+        pass
 
     def rotate(self, n=1):
-        modn = n % len(self)
-        result = self.items[modn:] + self.items[0:modn]
-        return NoteSeq(result)
+        pass
 
     def stretch_dur(self, factor):
-        return NoteSeq([x.stretch_dur(factor) for x in self.items])
+        pass
 
     ## TODO: gives an error with rests
     def intervals(self):
-        v1 = self[:]
-        v2 = self.rotate()
-
-        return [y - x for x, y in zip(v1, v2[:-1])]
+        pass
 
     def stretch_interval(self, factor):
-        intervals = [x + factor for x in self.intervals()]
-        note = copy.copy(self[0])
-        result = NoteSeq([note])
-        for i in intervals:
-            note = note.transposition(i)
-            result.append(note)
-        return result
+        pass
 
     # Aliases
     transp = transposition_startswith
